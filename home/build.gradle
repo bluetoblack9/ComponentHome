@@ -50,6 +50,6 @@ dependencies {
     implementation 'com.github.bluetoblack9:ComponentCommon:V1.0.1'
 
     //注意这里只依赖 export_news（news由壳工程引入）
-    implementation 'com.github.bluetoblack9.ComponentNews:export_news:V1.0.0'
+    implementation 'com.github.bluetoblack9.ComponentNews:export_news:V1.0.1'
 
 }
