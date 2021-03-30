@@ -27,7 +27,7 @@ public class HomeActivity extends BaseActivity {
         findViewById(R.id.btn_to_news).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //通过路由跳转到 购物车组件的购物车页面（但没有依赖购物车组件）
+                //通过路由跳转到 新闻组件的新闻页面（但没有依赖新闻组件）
 //                ARouter.getInstance()
 //                        .build("/news/NewActivity")
 //                        .withString("key1","value1")//携带参数1
@@ -40,6 +40,6 @@ public class HomeActivity extends BaseActivity {
 
         //调用新闻组件服务：获取新闻数量
         TextView tvNewProductCount = findViewById(R.id.tv_news_num);
-        tvNewProductCount.setText("购物车商品数量:"+ NewsServiceUtil.getNewsProductCount().productCount);
+        tvNewProductCount.setText("新闻数量:"+ NewsServiceUtil.getNewsProductCount().productCount);
     }
 }
