@@ -50,6 +50,8 @@ dependencies {
     implementation 'com.github.bluetoblack9:ComponentCommon:V1.0.1'
 
     //注意这里只依赖 export_news（news由壳工程引入）
-    implementation 'com.github.bluetoblack9.ComponentNews:export_news:V1.0.2'
+//    implementation 'com.github.bluetoblack9.ComponentNews:export_news:V1.0.2'
+    // 因再次修改时,只修改了export_news,所以jitPack 打包的依赖变为了
+    implementation 'com.github.bluetoblack9:ComponentNews:V1.0.4'
 
 }

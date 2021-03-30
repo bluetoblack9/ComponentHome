@@ -40,6 +40,6 @@ dependencies {
 
     // 测试使用
     implementation 'com.github.bluetoblack9:ComponentCommon:V1.0.1'
-    implementation 'com.github.bluetoblack9.ComponentNews:news:V1.0.3'
+    implementation 'com.github.bluetoblack9.ComponentNews:news:V1.0.5'
     implementation project(path: ':home')
 }
