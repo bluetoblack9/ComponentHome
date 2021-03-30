@@ -1,0 +1,87 @@
+apply plugin: 'maven'
+//********不要忘了在module库的build.gradle配置中，加上 apply from:'maven_push.gradle' ****************
+
+
+// 私有Maven库的地址  SNAPSHOT 开发过程中测试版本   RELEASE 发布apk使用的发布版本
+def MAVEN_UPLOAD_URL_SNAPSHOT="http://xxx:8081/repository/android_maven_snapshot/"
+// 自己的私有maven服务器的地址
+def MAVEN_UPLOAD_URL_RELEASE="http://xxx:8081/repository/android_maven_release/"
+def MAVEN_USER_NAME="xxx" //私有服务器的 用户名
+def MAVEN_PWD="xxx" //私有服务器的 密码
+
+def GROUP_ID="com.blue.component"
+def BUILD_TYPE = "snapshot"
+def SDK_TYPE = "aar"
+def ARTIFACT_ID = "commlib"
+def VERSION_NAME = "1.0.0-SNAPSHOT"  // snapshot 版本的命令必须带上-SNAPSHOT
+
+// 上面以 def 命令的变量，都可以先在gradle.properties 定义好，然后再此处引用，这样方便版本的统一处理
+// 如果上传错误为：Failed to transfer file:...Return code is:4X
+// 可以见https://blog.csdn.net/qq_35974759/article/details/93644725 这边文章分析的错误
+
+
+
+configurations {
+    deployerJars
+}
+
+repositories {
+    mavenCentral()
+}
+
+//上传到Maven仓库的task
+uploadArchives {
+    repositories {
+        mavenDeployer {
+
+            if (BUILD_TYPE.equals("release")) {
+                repository(url: MAVEN_UPLOAD_URL_RELEASE) { // 指定正式版本 maven仓库url
+                    authentication(userName: MAVEN_USER_NAME, password: MAVEN_PWD)
+                }
+            } else if (BUILD_TYPE.equals("snapshot")) {
+                repository(url: MAVEN_UPLOAD_URL_SNAPSHOT) { // 指定快照版本 maven仓库url
+                    authentication(userName: MAVEN_USER_NAME, password: MAVEN_PWD)
+                }
+            } else {
+                // 向build窗口打印日志
+                println "BUILD_TYPE is invalid for ${project.name}"
+            }
+
+            pom.project {
+                name project.name
+                packaging SDK_TYPE // 上传maven库的类型
+                artifactId ARTIFACT_ID // 项目名称（通常为类库模块名称，也可以任意）
+                version VERSION_NAME // 版本号
+                groupId GROUP_ID // 唯一标识（通常为模块包名，也可以任意）
+            }
+            doLast {
+                println "upload ${project.name} success to private maven. build type:" + BUILD_TYPE
+            }
+        }
+    }
+}
+
+// type显示指定任务类型或任务, 这里指定要执行Javadoc这个task,这个task在gradle中已经定义
+task androidJavadocs(type: Javadoc) {
+    // 设置源码所在的位置
+    source = android.sourceSets.main.java.sourceFiles
+}
+
+// 生成javadoc.jar
+task androidJavadocsJar(type: Jar) {
+    // 指定文档名称
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
+// 打包main目录下代码和资源的task，生成sources.jar
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+
+//配置需要上传到maven仓库的文件
+artifacts {
+    archives androidSourcesJar
+    archives androidJavadocsJar
+}
